@@ -1,0 +1,1423 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LingoFlash 🎀 Hello Kitty Edition — style.css v3.0
+   Pulizia completa: duplicati rimossi, mobile-first, struttura ordinata
+═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+/* ── VARIABILI ─────────────────────────────────────────────────────────────── */
+
+:root {
+    --bg:           #fff0f3;
+    --pink:         #ffb7c5;
+    --dark-pink:    #ff4d6d;
+    --red:          #ff0e34;
+    --white:        #ffffff;
+    --text:         #4a424a;
+    --shadow:       0 10px 30px rgba(255, 77, 109, 0.12);
+    --r-card:       28px;
+    --r-btn:        20px;
+    --transition:   all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --btn-speed:    all 0.2s ease;
+}
+
+/* ── RESET & BASE ──────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color:       var(--text);
+    font-family: 'Nunito', sans-serif;
+    margin:      0;
+    min-height:  100vh;
+    touch-action: manipulation;
+}
+
+/* ── NAVIGAZIONE FISSA ─────────────────────────────────────────────────────── */
+
+.main-nav {
+    position:        fixed;
+    top:             0;
+    left:            0;
+    width:           100%;
+    height:          60px;
+    background:      var(--white);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    gap:             20px;
+    border-bottom:   2px solid var(--pink);
+    box-shadow:      0 2px 10px rgba(0,0,0,0.05);
+    z-index:         9999;
+    overflow-x:      auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-btn {
+    flex:          0 0 auto;
+    background:    none;
+    border:        none;
+    padding:       8px 14px;
+    font-size:     0.9rem;
+    color:         var(--pink);
+    cursor:        pointer;
+    transition:    var(--transition);
+    border-radius: 12px;
+    white-space:   nowrap;
+}
+
+.nav-btn.active {
+    color:         var(--dark-pink);
+    border-bottom: 2px solid var(--dark-pink);
+    transform:     scale(1.05);
+}
+
+/* ── LAYOUT PRINCIPALE ─────────────────────────────────────────────────────── */
+
+.app-layout {
+    width:     100%;
+    max-width: 1000px;
+    margin:    0 auto;
+    padding:   80px 20px 30px;
+}
+
+/* ── GESTIONE PAGINE ───────────────────────────────────────────────────────── */
+
+.page-content        { display: none; }
+.page-content.active { display: block; }
+
+/* ── LAYOUT GESTIONE (2 colonne) ───────────────────────────────────────────── */
+
+.manage-layout {
+    display:               grid;
+    grid-template-columns: 300px 1fr;
+    gap:                   20px;
+    align-items:           start;
+}
+
+/* ── SIDEBAR ───────────────────────────────────────────────────────────────── */
+
+.sidebar {
+    background:    var(--white);
+    border-radius: 24px;
+    padding:       22px;
+    box-shadow:    var(--shadow);
+    position:      sticky;
+    top:           80px;
+}
+
+.sidebar h3 {
+    margin:      0 0 16px;
+    font-weight: 900;
+    color:       var(--dark-pink);
+}
+
+/* ── CARTELLE ──────────────────────────────────────────────────────────────── */
+
+.empty-state {
+    padding:     20px;
+    text-align:  center;
+    color:       var(--pink);
+    font-weight: 700;
+}
+
+.folder-item {
+    display:       flex;
+    align-items:   center;
+    background:    #fdf2f4;
+    border-radius: 16px;
+    margin-bottom: 8px;
+    padding-right: 10px;
+    transition:    var(--transition);
+    position:      relative; /* Fondamentale per posizionare la bandiera */
+    overflow:      hidden;   /* Taglia la bandiera gigante */
+    border:        2px solid transparent;
+}
+
+/* EFFETTO BANDIERA SFONDO */
+.folder-item::after {
+    content: attr(data-flag); /* Prende la bandiera dall'attributo HTML */
+    position: absolute;
+    right: -15px;      /* La sposta a destra */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 5rem;   /* Emoji gigante */
+    opacity: 0.12;     /* Molto tenue, quasi un'ombra */
+    pointer-events: none; 
+    filter: blur(1px); /* La rende più morbida */
+    transition: 0.3s;
+}
+
+.folder-item.active {
+    background: var(--dark-pink);
+    transform:  translateX(4px);
+}
+
+/* Quando la cartella è attiva, la bandiera si vede un po' di più */
+.folder-item.active::after {
+    opacity: 0.25;
+    right: -5px;
+}
+
+.folder-btn {
+    flex-grow:   1;
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+    background:  transparent;
+    color:       inherit;
+    border:      none;
+    padding:     12px 16px;
+    font-weight: 800; /* Testo più marcato */
+    font-family: 'Nunito', sans-serif;
+    font-size:   0.95rem;
+    cursor:      pointer;
+    text-align:  left;
+    position:    relative;
+    z-index:     2; /* Sta sopra la bandiera */
+}
+
+.folder-item.active .folder-btn { color: white; }
+
+.word-count {
+    margin-left:   auto;
+    background:    rgba(255, 77, 109, 0.12);
+    color:         var(--dark-pink);
+    border-radius: 10px;
+    padding:       4px 10px; /* Un po' più cicciotto ora che è solo */
+    font-size:     0.85rem;
+    font-weight:   900;
+    position:      relative;
+    z-index:       2;
+    margin-right:  10px;
+}
+
+.folder-item.active .word-count {
+    background: rgba(255,255,255,0.25);
+    color:      white;
+}
+
+.folder-actions {
+    display:     flex;
+    gap:         6px;
+    opacity:     0;
+    transition:  0.2s;
+    flex-shrink: 0;
+    position:    relative;
+    z-index:     3; /* Le icone devono stare sopra a tutto */
+}
+
+.folder-item:hover .folder-actions { opacity: 1; }
+
+.delete-folder {
+    cursor:     pointer;
+    font-size:  0.9rem;
+    filter:     grayscale(1);
+    transition: var(--transition);
+}
+
+.delete-folder:hover {
+    filter:    grayscale(0);
+    transform: scale(1.2);
+}
+
+/* Colori dinamici in base alla lingua */
+.pill-zh { background: #ff7675; color: white; } /* Rosso per Cinese */
+.pill-ja { background: #74b9ff; color: white; } /* Blu per Giapponese */
+.pill-ko { background: #55efc4; color: #00b894; } /* Verde per Coreano */
+.pill-en { background: #a29bfe; color: white; } /* Viola per Inglese */
+.pill-vi { background: #ffeaa7; color: #d6a317; } /* Giallo per Vietnamita */
+
+/* Stato quando la cartella è selezionata (tutto più chiaro per leggibilità) */
+.folder-item.active .lang-pill {
+    background: white;
+    color: var(--dark-pink);
+}
+
+/* ── CREA CARTELLA ─────────────────────────────────────────────────────────── */
+
+#btn-toggle-new-folder {
+    width: 100%;
+    background: white;
+    border: 2px dashed var(--pink);
+    color: var(--pink);
+    padding: 12px;
+    border-radius: 16px;
+    margin-top: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#btn-toggle-new-folder:hover {
+    background: var(--bg);
+    color: var(--dark-pink);
+    border-color: var(--dark-pink);
+}
+
+.new-folder-input-area {
+    background: var(--bg);
+    padding: 12px; /* Leggermente ridotto per dare spazio ai tasti */
+    border-radius: 20px;
+    margin-top: 10px;
+    border: 2px solid var(--pink);
+}
+
+.new-folder-input-area input {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.folder-input-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 6px; /* Spazio tra gli elementi */
+    margin-top: 5px;
+    width: 100%;
+    align-items: stretch; /* Tutti alti uguali */
+}
+
+/* Regola comune per i 3 elementi nella riga */
+.folder-input-actions > * {
+    flex: 1;           /* Ognuno prende esattamente 1/3 dello spazio */
+    min-width: 0;      /* Evita che il contenuto spinga fuori l'elemento */
+    height: 40px;      /* Altezza fissa per simmetria */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 !important; /* Rimuove margini che spingono a capo */
+    padding: 0 5px !important;
+}
+
+/* Stile specifico Tasto Crea */
+#btn-add-folder {
+    background: var(--dark-pink);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 0 #d6468a;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 5px; /* Spazio dal campo testo */
+}
+
+
+
+/* Stile specifico Tasto Annulla */
+#btn-cancel-folder {
+    background: #e0e0e0;
+    color: #666;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+}
+
+
+/* ── LINGUA DI STUDIO ──────────────────────────────────────────────────────── */
+
+.language-config {
+    margin-top:  22px;
+    padding-top: 15px;
+    border-top:  2px dashed var(--pink);
+}
+
+.language-config small {
+    display:        block;
+    font-weight:    900;
+    font-size:      0.65rem;
+    color:          var(--pink);
+    margin-bottom:  8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.lang-select {
+    appearance:          none;
+    background-color:    white;
+    background-image:    url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffb7c5' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat:   no-repeat;
+    background-position: right 10px center;
+    background-size:     15px;
+    width:               100%;
+    padding:             12px 15px;
+    border:              2px solid var(--pink);
+    border-radius:       14px;
+    font-family:         'Nunito', sans-serif;
+    font-weight:         700;
+    color:               var(--text);
+    cursor:              pointer;
+    outline:             none;
+    transition:          var(--transition);
+}
+
+.lang-select:hover,
+.lang-select:focus {
+    border-color: var(--dark-pink);
+    box-shadow:   0 4px 12px rgba(255, 183, 197, 0.3);
+}
+
+/* ── BACKUP ────────────────────────────────────────────────────────────────── */
+
+.backup-zone {
+    margin-top:            18px;
+    padding-top:           15px;
+    border-top:            2px dashed var(--bg);
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   8px;
+}
+
+.btn-backup {
+    background:    white;
+    border:        2px solid var(--pink);
+    color:         var(--dark-pink);
+    padding:       8px;
+    border-radius: 12px;
+    font-size:     0.75rem;
+    box-shadow:    0 3px 0 var(--pink);
+    font-family:   'Nunito', sans-serif;
+    font-weight:   800;
+    cursor:        pointer;
+    transition:    var(--transition);
+    opacity:       0.85;
+}
+
+.btn-backup:hover {
+    background:   var(--bg);
+    border-color: var(--dark-pink);
+    opacity:      1;
+}
+
+/* ── HEADER PAGINA ─────────────────────────────────────────────────────────── */
+
+header { margin-bottom: 20px; }
+
+header h1 {
+    font-size:   clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 900;
+    color:       var(--dark-pink);
+    margin:      0 0 4px;
+}
+
+.title-icon { font-size: 2rem; }
+
+#current-folder-display {
+    color:       #bbb;
+    font-size:   0.9rem;
+    font-weight: 700;
+}
+
+.folder-badge {
+    background:    var(--pink);
+    color:         white;
+    padding:       4px 12px;
+    border-radius: 20px;
+    font-size:     0.85rem;
+    font-weight:   900;
+}
+
+.folder-badge.hidden { display: none; }
+
+/* ── CARD ──────────────────────────────────────────────────────────────────── */
+
+.card {
+    background:    var(--white);
+    border-radius: var(--r-card);
+    padding:       32px;
+    box-shadow:    var(--shadow);
+    margin-bottom: 24px;
+}
+
+.card h2 {
+    margin:      0 0 20px;
+    font-weight: 900;
+    color:       var(--dark-pink);
+}
+
+/* ── INPUT ─────────────────────────────────────────────────────────────────── */
+
+input[type="text"] {
+    width:         100%;
+    background:    #f8f9fa;
+    border:        2px solid #f1f1f1;
+    padding:       16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    font-family:   'Nunito', sans-serif;
+    font-size:     1rem;
+    color:         var(--text);
+    outline:       none;
+    transition:    border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus {
+    border-color: var(--pink);
+    box-shadow:   0 0 0 3px rgba(255, 183, 197, 0.2);
+}
+
+input[type="text"]::placeholder { text-transform: none; }
+
+#eng-word,
+#target-word,
+#pronunciation { text-transform: capitalize; }
+
+.input-group {
+    display:       flex;
+    gap:           8px;
+    margin-bottom: 12px;
+}
+
+.input-group input[type="text"] {
+    margin-bottom: 0;
+    flex-grow:     1;
+}
+
+/* ── BOTTONI — BASE ────────────────────────────────────────────────────────── */
+
+button {
+    cursor:          pointer;
+    font-weight:     800;
+    font-family:     'Nunito', sans-serif;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    border:          none;
+    transition:      var(--btn-speed);
+}
+
+button:active {
+    transform:  translateY(4px) !important;
+    box-shadow: none !important;
+}
+
+/* ── BOTTONI — VARIANTI ────────────────────────────────────────────────────── */
+
+#btn-save {
+    background:    var(--dark-pink);
+    color:         white;
+    box-shadow:    0 6px 0 #d6468a;
+    padding:       18px;
+    border-radius: var(--r-btn);
+    width:         100%;
+    font-size:     1rem;
+}
+
+#btn-generate {
+    background:    var(--red);
+    color:         white;
+    box-shadow:    0 6px 0 #b30c25;
+    padding:       18px;
+    border-radius: var(--r-btn);
+    width:         100%;
+    margin-bottom: 15px;
+    font-size:     1rem;
+}
+
+#btn-add-folder {
+    background:    var(--dark-pink);
+    color:         white;
+    padding:       10px 18px;
+    border-radius: 12px;
+    box-shadow:    0 4px 0 #d6468a;
+    white-space:   nowrap;
+    flex-shrink:   0;
+}
+
+.btn-addon {
+    background:    var(--pink);
+    color:         white;
+    border-radius: 16px;
+    width:         52px;
+    height:        54px;
+    font-size:     1.2rem;
+    box-shadow:    0 4px 0 #d6468a;
+    flex-shrink:   0;
+}
+
+.btn-addon:hover { background: var(--dark-pink); }
+
+.btn-reveal {
+    background:    white;
+    border:        2px solid var(--pink);
+    color:         var(--dark-pink);
+    padding:       12px 24px;
+    border-radius: var(--r-btn);
+    font-size:     0.95rem;
+    width:         100%;
+}
+
+.btn-reveal:hover { background: var(--bg); }
+
+.btn-icon {
+    background:    #ffeef2;
+    border:        2px solid var(--pink);
+    border-radius: 50%;
+    width:         45px;
+    height:        45px;
+    font-size:     1.2rem;
+    box-shadow:    0 4px 0 var(--pink);
+    flex-shrink:   0;
+}
+
+.btn-icon:hover { background: var(--bg); }
+
+.btn-delete-word {
+    background:    none;
+    border:        none;
+    cursor:        pointer;
+    font-size:     1.1rem;
+    padding:       4px 8px;
+    border-radius: 8px;
+    transition:    transform 0.2s, background 0.2s;
+}
+
+.btn-delete-word:hover {
+    transform:  scale(1.2);
+    background: #ffeef2;
+}
+
+/* ── QUIZ ──────────────────────────────────────────────────────────────────── */
+
+.quiz-container {
+    background:    #fff9fa;
+    border:        3px dashed var(--pink);
+    border-radius: 24px;
+    padding:       50px 20px;
+    text-align:    center;
+    margin-bottom: 25px;
+}
+
+.label {
+    display:        block;
+    font-size:      0.7rem;
+    font-weight:    900;
+    letter-spacing: 2px;
+    color:          #bbb;
+    margin-bottom:  10px;
+    text-transform: uppercase;
+}
+
+.question-text {
+    font-size:      clamp(2rem, 6vw, 3.2rem);
+    font-weight:    900;
+    color:          var(--dark-pink);
+    letter-spacing: -1px;
+    line-height:    1.2;
+}
+
+/* ── SELETTORE RAPIDO QUIZ ─────────────────────────────────────────────────── */
+
+.quiz-folder-selector {
+    display:         flex;
+    align-items:      center;
+    justify-content: center;
+    flex-wrap:        wrap;
+    gap:              10px;
+    margin:           15px 0;
+    background:       var(--bg);
+    padding:          10px 14px;
+    border-radius:    20px;
+    border:           2px dashed var(--pink);
+}
+
+.quiz-folder-selector small {
+    color:          var(--dark-pink);
+    font-weight:    700;
+    text-transform: uppercase;
+    font-size:      0.75rem;
+}
+
+/* LA BANDIERINA (Toggle Lingua) */
+.quiz-folder-selector .lang-pill {
+    background: white !important;
+    border: 2px solid var(--pink) !important;
+    border-radius: 12px !important;
+    padding: 4px 10px !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 2px 2px 0 var(--pink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Effetto al click (evita che resti incastrato su Safari) */
+.quiz-folder-selector .lang-pill:active {
+    transform: scale(0.9) translateY(2px) !important;
+    box-shadow: 0 0 0 var(--pink) !important;
+}
+
+.folder-select-mini {
+    background:    white;
+    border:        2px solid var(--pink);
+    border-radius: 12px;
+    padding:       5px 15px;
+    font-family:   'Nunito', sans-serif;
+    color:         var(--dark-pink);
+    font-weight:   700;
+    cursor:        pointer;
+    outline:       none;
+    transition:    var(--transition);
+    box-shadow:    2px 2px 0 var(--pink);
+}
+
+/* Hover solo per PC */
+@media (min-width: 769px) {
+    .folder-select-mini:hover, .quiz-folder-selector .lang-pill:hover {
+        border-color: var(--dark-pink) !important;
+        transform:    translateY(-2px);
+        box-shadow:   4px 4px 0 var(--pink);
+    }
+}
+
+.folder-select-mini:focus { border-color: var(--dark-pink); }
+
+/* Fix per Safari Mobile: evita lo stato focus persistente */
+.folder-select-mini:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 var(--pink);
+}
+/* ── SOLUZIONE QUIZ ────────────────────────────────────────────────────────── */
+
+.answer-wrapper  { margin-top: 10px; }
+.spoiler-control { margin-bottom: 10px; }
+
+.solution-box {
+    background:    var(--white);
+    border:        2px solid var(--pink);
+    border-radius: 20px;
+    opacity:       0;
+    max-height:    0;
+    overflow:      hidden;
+    transition:    all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display:       grid;
+    grid-template-columns: 1fr 1fr;
+    align-items:   center;
+}
+
+.solution-box.reveal {
+    max-height: 500px; /* Aumentata per far spazio ai nuovi tasti su PC */
+    opacity: 1;
+    padding: 25px 0;
+    margin-top: 15px;
+    box-shadow: var(--shadow);
+}
+
+.sol-item {
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    justify-content: center;
+    padding:         10px;
+    gap:             8px;
+}
+
+.sol-item:first-child { border-right: 2px solid var(--bg); }
+
+.sol-item small {
+    text-transform: uppercase;
+    color:          #bbb;
+    font-weight:    800;
+    font-size:      0.7rem;
+    letter-spacing: 1px;
+}
+
+.main-word {
+    font-size:   clamp(2.2rem, 7vw, 3.5rem);
+    font-weight: 900;
+    color:       var(--dark-pink);
+    line-height: 1;
+}
+
+.sub-word {
+    font-size:     1.4rem;
+    color:         var(--text);
+    background:    var(--bg);
+    padding:       8px 16px;
+    border-radius: 12px;
+    font-weight:   700;
+}
+
+/* ── TABELLA PAROLE (OTTIMIZZATA PER IPHONE) ── */
+
+.table-container {
+    overflow-y: auto;
+    overflow-x: hidden !important; /* Forza il blocco laterale */
+    max-height: 400px;
+    margin-top: 15px;
+    border: 1px solid #ffeef2;
+    border-radius: 12px;
+    touch-action: pan-y; 
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+.table-container::-webkit-scrollbar       { width: 6px; height: 6px; }
+.table-container::-webkit-scrollbar-track { background: var(--bg); }
+.table-container::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
+
+table {
+    width: 100%;
+    min-width: 100% !important; 
+    border-collapse: collapse;
+    table-layout: fixed; /* Mantiene le colonne larghe uguali e ferme */
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+th {
+    background: var(--pink);
+    color: white;
+    font-weight: 900;
+    padding: 12px 14px;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Celle: Posizionamento fisso per evitare traballamenti */
+td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #ffeef2;
+    vertical-align: middle;
+    background-color: white; 
+    position: relative;      
+    z-index: 2;             
+    transition: transform 0.2s ease-out;
+    overflow: hidden;       /* Evita che il testo lungo allarghi la tabella */
+    text-overflow: ellipsis;
+}
+
+tr:last-child td { border-bottom: none; }
+
+/* Desktop Hover */
+@media (min-width: 769px) {
+    tr:hover td { background: #fff5f7; }
+}
+
+/* ── TOAST ─────────────────────────────────────────────────────────────────── */
+
+.lf-toast {
+    position:       fixed;
+    bottom:         24px;
+    right:          24px;
+    color:          white;
+    padding:        12px 24px;
+    border-radius:  24px;
+    z-index:        99999;
+    font-family:    'Nunito', sans-serif;
+    font-weight:    800;
+    font-size:      0.95rem;
+    box-shadow:     0 8px 20px rgba(0,0,0,0.15);
+    opacity:        0;
+    transform:      translateY(16px);
+    transition:     opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.lf-toast.visible {
+    opacity:   1;
+    transform: translateY(0);
+}
+
+/* ── UTILITY ───────────────────────────────────────────────────────────────── */
+
+.hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET  (≤ 850px)
+═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 850px) {
+
+    .manage-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: static;
+        top:      auto;
+    }
+
+    .solution-box.reveal {
+        grid-template-columns: 1fr;
+        max-height:            420px;
+    }
+
+    .sol-item:first-child {
+        border-right:  none;
+        border-bottom: 2px solid var(--bg);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE  (≤ 600px)
+═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+    /* Rendi il layout fluido eliminando i margini fissi */
+    .app-layout {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 70px 10px 24px !important; /* Riduci il padding laterale a 10px */
+    }
+
+    .manage-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 15px !important;
+    }
+
+    /* Forza il div.manage-main a occupare tutta la larghezza */
+    .manage-main {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important; /* Rimuovi il padding che stringe le card */
+    }
+
+    /* Le card devono ora espandersi */
+    .card, .sidebar {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 20px !important; /* Leggermente più compatti sui bordi */
+    }
+}
+
+/* ── SWIPE PREMIUM UI (FIX SAFARI) ── */
+
+/* Applichiamo lo sfondo rosso SOLO alle righe della tabella parole */
+#words-list-body tr {
+    position: relative;
+    background-color: #d63031; 
+    overflow: hidden;
+    transition: background 0.3s ease;
+}
+
+/* Le celle devono stare sopra lo sfondo rosso */
+#words-list-body td {
+    background-color: white; 
+    position: relative;
+    z-index: 2; /* Safari ha bisogno di questo per non mostrare il fondo */
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    border-bottom: 1px solid #ffeef2;
+}
+
+/* La scritta ELIMINA vincolata solo alla tabella parole */
+/* Aggiungiamo 'display: none' di base e 'block' solo per la tabella */
+.folder-item::after { content: none !important; } /* Forza la rimozione dalle cartelle */
+
+#words-list-body tr::after {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: 900;
+    font-size: 0.75rem;
+    z-index: 1;
+    opacity: 0.7;
+    display: block !important;
+}
+
+/* --- Bottoni SRS --- */
+
+.srs-buttons {
+    grid-column: 1 / span 2; /* Su PC occupa tutto lo spazio */
+    margin-top: 20px;
+    padding: 15px 20px;
+    border-top: 2px dashed var(--pink);
+    text-align: center;
+}
+
+.srs-label {
+    font-size: 0.8rem;
+    color: var(--dark-pink);
+    margin-bottom: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.srs-flex {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-srs {
+    flex: 1;
+    max-width: 200px;
+    padding: 12px 18px;
+    border-radius: 15px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+}
+
+.btn-srs.red { background: #fbc8d2; color: #9c2f43; }
+.btn-srs.green { background: #d8f3dc; color: #2d6a4f; }
+
+/* ─── VISTA MOBILE (Sotto i 600px) ─────────────────────────────────── */
+
+@media (max-width: 600px) {
+    
+    .solution-box {
+        display: flex; /* Cambia da Grid a Flex per incolonnare */
+        flex-direction: column; 
+        align-items: center;
+        padding: 20px 10px;
+        max-height: 600px;
+    }
+
+    .sol-item:first-child {
+        border-right: none; /* Toglie la linea verticale */
+        border-bottom: 2px solid var(--bg); /* Aggiunge linea orizzontale di separazione */
+        width: 100%;
+        padding-bottom: 15px;
+    }
+
+    .sol-item {
+        width: 100%;
+        padding: 15px 0;
+    }
+
+    /* Rendiamo i bottoni feedback più piccolini su mobile */
+    .btn-srs {
+        padding: 10px 15px; /* Più largo ai lati */
+        font-size: 0.8rem;
+        max-width: none;      /* Rimuoviamo il limite di larghezza su mobile */
+        flex: 1;              /* Si allungano per occupare lo spazio */
+        white-space: nowrap; 
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .srs-flex {
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+        padding: 0 10px;
+    }
+}
+.stats-card { margin-bottom: 20px; border: 2px solid white; }
+.stats-header { display: flex; justify-content: space-between; align-items: center; }
+.medal { font-size: 1.8rem; }
+
+.progress-bar-bg {
+    background: #ffeef2;
+    height: 12px;
+    border-radius: 10px;
+    margin: 12px 0 5px;
+    overflow: hidden;
+    border: 1px solid var(--pink);
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, var(--pink), var(--dark-pink));
+    height: 100%;
+    transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.progress-label {
+    text-align: right;
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: var(--dark-pink);
+    letter-spacing: 1px;
+}
+
+.global-stats-card {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe3e9 100%);
+    border: 2px solid white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(255, 182, 193, 0.3);
+    text-align: center;
+}
+
+/* Container principale della Dashboard */
+.dash-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe3e9 100%);
+    padding: 30px; /* Più respiro */
+    border-radius: 25px;
+    border: 2px solid white;
+    box-shadow: 0 10px 25px rgba(255, 182, 193, 0.4);
+    margin-bottom: 30px;
+}
+
+/* Parte Sinistra: Rank */
+.dash-left {
+    flex: 1.2; /* Diamo un po' più di spazio al rango */
+    text-align: left;
+    border-right: 2px dashed rgba(214, 51, 132, 0.15);
+}
+
+.dash-label {
+    display: block;
+    font-size: 0.7rem; /* Leggermente più grande */
+    font-weight: 900;
+    color: var(--dark-pink);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.dash-rank {
+    font-size: 2.2rem; /* Molto più d'impatto */
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.1;
+}
+
+/* Parte Destra: Dati in colonna */
+.dash-right {
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Più spazio tra le righe */
+    flex: 1;
+}
+
+.mini-stat {
+    display: flex;
+    align-items: center; /* Allineamento centrale tra numero e testo */
+    gap: 12px;
+}
+
+.mini-val {
+    font-size: 1.8rem; /* Numeri grandi e leggibili */
+    font-weight: 900;
+    color: var(--dark-pink);
+    min-width: 60px; /* Riserva spazio per i numeri a 3 cifre */
+    line-height: 1;
+}
+
+.mini-lab {
+    font-size: 0.85rem; /* Testo più leggibile */
+    font-weight: 700;
+    color: #8a8a8a;
+    white-space: nowrap; /* Evita che il testo vada a capo male */
+}
+
+/* --- ADATTAMENTO MOBILE (Sotto i 600px) --- */
+@media (max-width: 600px) {
+    .dash-layout {
+        flex-direction: column; /* Incolonna tutto su smartphone */
+        text-align: center;
+        padding: 20px;
+    }
+
+    .dash-left {
+        border-right: none;
+        border-bottom: 2px dashed rgba(214, 51, 132, 0.15);
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .dash-rank {
+        font-size: 1.8rem;
+    }
+
+    .dash-right {
+        padding-left: 0;
+        align-items: center; /* Centra le statistiche su mobile */
+        width: 100%;
+    }
+    
+    .mini-stat {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .mini-val {
+        font-size: 1.5rem;
+        min-width: auto;
+    }
+}
+
+.card-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(0,0,0,0.05);
+}
+
+.btn-manage-mini {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-manage-mini.reset { background: #f5f5f5; color: #888; }
+.btn-manage-mini.study { background: var(--dark-pink); color: white; }
+
+.btn-manage-mini:active { transform: scale(0.95); }
+
+#btn-toggle-direction {
+    background: var(--white);
+    border: 2px solid var(--pink);
+    color: var(--dark-pink);
+    padding: 8px 15px;
+    border-radius: var(--r-btn);
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--btn-speed);
+    margin-bottom: 15px;
+}
+
+#btn-toggle-direction:hover {
+    background: var(--pink);
+    color: var(--white);
+}
+/* Allineamento perfetto per il selettore e il tasto switch */
+/* Container del selettore e dello switch */
+.quiz-folder-selector {
+    display: flex;
+    flex-direction: row; /* Forza la riga */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px auto;
+    width: 95%; /* Quasi tutta la larghezza su mobile */
+}
+
+/* Rimpiccioliamo leggermente il selettore per far stare tutto */
+.folder-select-mini {
+    flex: 1; /* Prende lo spazio rimanente */
+    max-width: 200px;
+    padding: 8px;
+    border-radius: 12px;
+    border: 2px solid var(--pink);
+    font-size: 0.9rem;
+}
+
+/* Il tasto switch deve rimanere compatto e non andare a capo */
+.quiz-folder-selector {
+    display: flex !important;       /* Forza il layout flessibile */
+    flex-direction: row !important;  /* Forza la riga, mai la colonna */
+    align-items: center;            /* Allinea verticalmente al centro */
+    justify-content: center;        /* Centra tutto orizzontalmente */
+    gap: 10px;                      /* Spazio tra pulsante e menu */
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Rendi il selettore più snello per fargli spazio */
+.folder-select-mini {
+    flex: 0 1 auto;                 /* Non farlo allargare troppo */
+    min-width: 150px;               /* Dimensione minima decente */
+    max-width: 200px;               /* Evita che schiacci il pulsante */
+    padding: 8px;
+    border-radius: 12px;
+    border: 2px solid var(--pink);
+    font-size: 0.9rem;
+}
+
+/* Il pulsante switch */
+#btn-toggle-direction {
+    flex-shrink: 0;                 /* Impedisce al tasto di rimpicciolirsi */
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    white-space: nowrap;            /* Impedisce al testo di andare a capo */
+    margin: 0;                      /* Rimuove margini esterni fastidiosi */
+}
+
+/* Nascondi la scritta "Set scelto" su mobile se lo schermo è piccolo */
+@media (max-width: 400px) {
+    .quiz-folder-selector small {
+        display: none;
+    }
+}
+
+/* --- NUOVA AREA SELEZIONE LINGUE --- */
+.card-header-flex {
+    display: flex;
+    justify-content: space-between; /* Titolo a sinistra, bandiere a destra */
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #ffe5ec;
+    padding-bottom: 15px;
+}
+
+.lang-selector-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff0f3; /* Rosa chiarissimo */
+    padding: 6px 12px;
+    border-radius: 50px;
+    box-shadow: inset 1px 1px 3px rgba(255, 179, 193, 0.3);
+}
+
+.lang-pill {
+    border: 1px solid #ffb3c1 !important;
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 4px 8px !important;
+    cursor: pointer;
+    font-size: 1.2rem !important; /* Bandiere grandi */
+    transition: transform 0.2s;
+    outline: none;
+    width: auto !important; /* Impedisce che diventino larghe quanto la card */
+    margin: 0 !important;
+}
+
+.lang-pill:hover {
+    transform: scale(1.1);
+    border-color: var(--dark-pink) !important;
+}
+
+.arrow-mini {
+    font-size: 0.9rem;
+    color: var(--dark-pink);
+    font-weight: bold;
+    user-select: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (FIX COLONNA AZIONE)
+═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+    /* 1. SPARIZIONE TOTALE COLONNA AZIONE */
+    /* Usiamo selettori generici per essere sicuri di colpire ogni cella nell'ultima posizione */
+    #words-list-table th:last-child, 
+    #words-list-table td:last-child,
+    th:last-of-type, 
+    td:last-of-type {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+
+    /* 2. RIDISTRIBUZIONE SPAZIO */
+    /* Ora che la terza colonna è sparita, diamo il 50% alle due rimaste */
+    #words-list-table th, #words-list-table td {
+        width: 50% !important;
+    }
+
+    /* Layout fluido già presente */
+    .app-layout {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 70px 10px 24px !important;
+    }
+
+    .manage-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .card, .sidebar {
+        width: 100% !important;
+        border-radius: 20px !important;
+    }
+}
+
+/* Container principale del report */
+.quiz-report {
+    width: 100%;
+    padding: 10px; /* Ridotto per dare spazio ai figli */
+}
+
+/* Il blocco rosa "Da rivedere" */
+.review-box {
+    margin: 20px 0;      /* Rimosso auto, margini laterali a 0 */
+    width: 100%;         /* Forza la larghezza piena */
+    background: #fff5f7;
+    padding: 15px 10px;  /* Padding laterale minimo */
+    border-radius: 15px;
+    border: 1px dashed #ff4d6d;
+    box-sizing: border-box; /* Fondamentale per il calcolo delle larghezze */
+}
+
+.review-box h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #ff4d6d;
+}
+
+.review-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* Ogni riga di errore */
+.review-box ul li {
+    display: flex;
+    flex-wrap: wrap;      
+    align-items: baseline; 
+    gap: 8px;             
+    padding: 10px 0;
+    border-bottom: 1px solid #ffe0e6;
+    width: 100%;
+}
+
+.review-item-main {
+    flex: 1;              
+    min-width: 120px;     /* Ridotto leggermente per schermi molto piccoli */
+    word-break: break-word;
+}
+
+.review-item-pron {
+    color: #a0a0a0;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* --- MEDIA QUERIES --- */
+
+/* Mobile: forza il blocco a espandersi */
+@media (max-width: 768px) {
+    .review-box {
+        width: calc(100% + 10px); /* Opzionale: per "mangiare" un po' di spazio del padre */
+        margin-left: -5px;         /* Centra se usi il calc sopra */
+    }
+}
+
+/* PC: limita la larghezza per non farlo disperdere */
+@media (min-width: 768px) {
+    .quiz-report {
+        max-width: 480px; 
+        margin: 0 auto;
+    }
+}

@@ -1,0 +1,38 @@
+{
+  "isCartridge": true,
+  "cartridgeName": "🌸 Test Cinese Tradizionale",
+  "lang": "zh-TW",
+  "sourceLang": "en",
+  "words": [
+    {
+      "id": "tw_001",
+      "eng": "Hello",
+      "target": "你好",
+      "pron": "Nǐ hǎo"
+    },
+    {
+      "id": "tw_002",
+      "eng": "Thank you",
+      "target": "謝謝",
+      "pron": "Xièxiè"
+    },
+    {
+      "id": "tw_003",
+      "eng": "Coffee",
+      "target": "咖啡",
+      "pron": "Kāfēi"
+    },
+    {
+      "id": "tw_004",
+      "eng": "Teacher",
+      "target": "老師",
+      "pron": "Lǎoshī"
+    },
+    {
+      "id": "tw_005",
+      "eng": "Friend",
+      "target": "朋友",
+      "pron": "Péngyǒu"
+    }
+  ]
+}

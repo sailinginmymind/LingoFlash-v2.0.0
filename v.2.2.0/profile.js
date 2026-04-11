@@ -52,9 +52,16 @@ const ProfileManager = {
 
     const currentIdx = ranks.findIndex(r => totalLearned >= r.min);
     const currentRank = ranks[currentIdx];
-    const nextRank = ranks[currentIdx - 1]; // Quello superiore
+    const nextRank = ranks[currentIdx - 1];
 
-    return { totalWords, totalLearned, avgMastery, rank: currentRank.label, nextRank };
+return { 
+    totalWords, 
+    totalLearned, 
+    avgMastery, 
+    rankValue: currentRank.min, // Restituiamo 300, 200, ecc.
+    rankLabel: currentRank.label, // Fallback
+    nextRank: nextRank ? { min: nextRank.min, label: nextRank.label } : null
+};
 },
 
     // 3. Funzioni di Interazione (Invariate)
@@ -137,14 +144,13 @@ const ProfileManager = {
         let html = `
         <div class="global-stats-card dash-layout" style="display: flex; align-items: center; justify-content: space-around; padding: 30px;">
             <div class="dash-left" style="flex: 1.5; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid rgba(0,0,0,0.05);">
-                <small class="dash-label" style="font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 8px;">IL TUO RANGO</small>
-                <div class="dash-rank" style="font-size: 2.5rem; margin-bottom: 15px;">${global.rank}</div>
-                
+                <small class="dash-label i18n-rank-label" style="font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 8px;">IL TUO RANGO</small>
+<div class="dash-rank rank-name" data-rank="${global.rankValue}">${global.rankLabel}</div>                
                 <div class="rank-xp-container" style="width: 100%; max-width: 320px; margin-top: 5px;">
                     <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
                         <div style="width: ${xpPercent}%; height: 100%; background: #ff4d6d; border-radius: 10px; transition: width 0.8s ease;"></div>
                     </div>
-                    <div style="font-size: 0.75rem; color: #888; margin-top: 8px; font-weight: 600; text-transform: uppercase;">
+                    <div class="next-rank-info" style="font-size: 0.75rem; color: #888; margin-top: 8px; font-weight: 600; text-transform: uppercase;">
                         ${xpText}
                     </div>
                 </div>
@@ -153,19 +159,19 @@ const ProfileManager = {
             <div class="dash-right" style="flex: 1; display: flex; flex-direction: column; gap: 15px; padding-left: 20px;">
                 <div class="mini-stat">
                     <span class="mini-val" style="font-size: 1.4rem;">${global.totalWords}</span>
-                    <span class="mini-lab">Parole totali</span>
+                    <span class="mini-lab i18n-total-words">Parole totali</span>
                 </div>
                 <div class="mini-stat">
                     <span class="mini-val" style="color: #ff4d6d !important; font-size: 1.8rem;">${global.avgMastery}%</span>
-                    <span class="mini-lab">Maestria media</span>
+                    <span class="mini-lab i18n-avg-mastery">Maestria media</span>
                 </div>
                 <div class="mini-stat">
                     <span class="mini-val" style="font-size: 1.4rem;">${global.totalLearned}</span>
-                    <span class="mini-lab">Parole imparate</span>
+                    <span class="mini-lab i18n-learned-words">Parole imparate</span>
                 </div>
             </div>
         </div>
-        <h2 class="section-title">Le Mie Cartelle 📂</h2>
+        <h2 class="section-title i18n-profile-folders">Le Mie Cartelle 📂</h2>
     `;
 
        Object.keys(folders).forEach(name => {
@@ -182,12 +188,18 @@ const ProfileManager = {
                 // Rimosso il giallo: sotto l'80% rimane grigio scuro, molto più leggibile.
             }
 
-            let progressArea = "";
+           let progressArea = "";
             if (stats.mastery === 0) {
+                // Determiniamo il testo iniziale in base alla lingua attuale
+                const currentLang = localStorage.getItem('lingoflash_lang') || 'it';
+                const msg = currentLang === 'it' 
+                    ? "Ogni grande viaggio inizia con una singola parola. Inizia a studiare! ✨" 
+                    : "Every great journey begins with a single word. Start studying! ✨";
+
                 progressArea = `
                     <div class="empty-folder-state" style="padding: 5px 10px; text-align: left; margin: 8px 0; border: none; background: transparent;">
-                        <p style="font-size: 0.8rem; color: #888; font-style: italic; margin: 0; line-height:1.2;">
-                            "Ogni grande viaggio inizia con una singola parola. Inizia a studiare! ✨"
+                        <p class="i18n-empty-msg" style="font-size: 0.8rem; color: #888; font-style: italic; margin: 0; line-height:1.2;">
+                            "${msg}"
                         </p>
                     </div>
                 `;
@@ -200,39 +212,44 @@ const ProfileManager = {
                 `;
             }
 
-            html += `
-                <div class="card stats-card" onclick="ProfileManager.toggleExpand('${name}')">
-                    <div class="stats-header">
-                        <div>
-                            <h3 style="margin:0; color:var(--text);">${name} <span style="font-size:0.9rem;">${stats.trend}</span></h3>
-                            <small style="color:#aaa;">${stats.learned} / ${stats.total} parole apprese</small>
-                        </div>
-                        <div class="medal">${medal}</div>
-                    </div>
-                    
-                    ${progressArea}
+           html += `
+    <div class="card stats-card" onclick="ProfileManager.toggleExpand('${name}')">
+        <div class="stats-header">
+            <div>
+                <h3 style="margin:0; color:var(--text);">${name} <span style="font-size:0.9rem;">${stats.trend}</span></h3>
+                <small style="color:#aaa;">${stats.learned} / ${stats.total} <span class="i18n-label-learned-count">parole apprese</span></small>
+            </div>
+            <div class="medal">${medal}</div>
+        </div>
+        
+        ${progressArea}
 
-                    <div class="quiz-mini-stats" style="display:flex; justify-content:space-between; margin-top:10px; padding:10px; background: #fff0f3; border-radius:12px; font-size:0.75rem; border: 1px solid #ffdde5;">
-                        <div style="color:${statusColor}; font-weight:bold;">🏆 Record: ${stats.quiz.bestScore}%</div>
-                        
-                        <div style="color:#555;">
-                            📊 Media <small style="opacity:0.7; font-size:0.65rem;">(ultimi ${stats.quiz.history ? stats.quiz.history.length : 0})</small>: 
-                            <b>${stats.quiz.averageScore}%</b>
-                        </div>
-                        
-                        <div style="color:#555;">🔥 Test: <b>${stats.quiz.totalAttempts}</b></div>
-                    </div>
+        <div class="quiz-mini-stats" style="display:flex; justify-content:space-between; margin-top:10px; padding:10px; background: #fff0f3; border-radius:12px; font-size:0.75rem; border: 1px solid #ffdde5;">
+            <div style="color:${statusColor}; font-weight:bold;">
+                <span class="i18n-label-record">🏆 Record</span>: ${stats.quiz.bestScore}%
+            </div>
+            
+            <div style="color:#555;">
+                <span class="i18n-label-avg">📊 Media</span> 
+                <small style="opacity:0.7; font-size:0.65rem;">(ultimi ${stats.quiz.history ? stats.quiz.history.length : 0})</small>: 
+                <b>${stats.quiz.averageScore}%</b>
+            </div>
+            
+            <div style="color:#555;">
+                <span class="i18n-label-test">🔥 Test</span>: <b>${stats.quiz.totalAttempts}</b>
+            </div>
+        </div>
 
-                    <div id="actions-${name}" class="card-actions hidden">
-                        <button class="btn-manage-mini reset" onclick="ProfileManager.resetProgress('${name}', event)">
-                            🔄 Reset
-                        </button>
-                        <button class="btn-manage-mini study" onclick="ProfileManager.studyFolder('${name}', event)">
-                            🎯 Studia Ora
-                        </button>
-                    </div>
-                </div>
-            `;
+        <div id="actions-${name}" class="card-actions hidden">
+            <button class="btn-manage-mini reset" onclick="ProfileManager.resetProgress('${name}', event)">
+                <span class="i18n-btn-reset">🔄 Reset</span>
+            </button>
+            <button class="btn-manage-mini study" onclick="ProfileManager.studyFolder('${name}', event)">
+                <span class="i18n-btn-study">🎯 Studia Ora</span>
+            </button>
+        </div>
+    </div>
+`;
         });
 
         container.innerHTML = html;

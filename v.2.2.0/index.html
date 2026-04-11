@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <title>LingoFlash 🎀</title>
+</head>
+<body>
+    <nav class="main-nav" style="display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; gap: 8px; height: 55px; background: white; border-bottom: 1px solid #ffccd5;">
+    
+    <div style="display: flex; gap: 4px; flex: 1;">
+        <button class="nav-btn active" data-target="quiz-page" style="flex: 1; padding: 10px 2px; font-size: 0.8rem; border-radius: 12px;">🎯 Studio</button>
+        <button class="nav-btn" data-target="manage-page" style="flex: 1; padding: 10px 2px; font-size: 0.8rem; border-radius: 12px;">📝 Gestisci</button>
+        <button class="nav-btn" data-target="profile-page" style="flex: 1; padding: 10px 2px; font-size: 0.8rem; border-radius: 12px;">🌸 Profilo</button>
+    </div>
+
+    <div class="source-lang-selector" style="position: relative; display: flex; align-items: center; justify-content: center; background: #fff0f3; border: 1.5px solid #ffccd5; border-radius: 20px; width: 65px; height: 36px; flex-shrink: 0; overflow: hidden;">
+        
+        <div style="pointer-events: none; display: flex; align-items: center; gap: 4px; z-index: 1;">
+            <span style="font-size: 0.9rem;">🌐</span>
+            <span id="current-flag-display" style="font-size: 1.2rem;">🇮🇹</span>
+        </div>
+
+        <select id="global-source-lang" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
+            </select>
+    </div>
+</nav>
+
+    <div class="app-layout">
+        
+        <main id="quiz-page" class="page-content active container">
+            <header>
+                <h1>LingoFlash <span class="title-icon">🎀</span></h1>
+                <div class="quiz-folder-selector">
+                    <button id="btn-toggle-direction" class="btn-secondary">🇬🇧 ➔ 🇹🇼</button>
+                    <small>Set scelto: </small>
+                    <span id="folder-selected-name" class="folder-badge hidden"></span> 
+                    <select id="quiz-folder-select" class="folder-select-mini"></select>
+                </div>
+            </header>
+            <section id="quiz-section" class="card quiz-card">
+                <h2>Esercitati</h2>
+                <div id="quiz-display" class="quiz-container">
+                    <span class="label">TRADUCI:</span>
+                    <div id="word-to-translate" class="question-text">Premi "Genera"</div>
+                </div>
+                <button id="btn-generate" class="btn-primary">GENERA NUOVA PAROLA</button>
+                
+                <div id="answer-area" class="answer-wrapper hidden">
+                    <div class="spoiler-control">
+                        <button id="btn-show-answer" class="btn-reveal">👁️ Mostra Soluzione</button>
+                    </div>
+                    <div id="solution-content" class="solution-box hidden">
+                        <div class="sol-item">
+                            <small>Traduzione</small>
+                            <div id="result-target" class="main-word"></div>
+                            <button id="btn-speak" class="btn-icon">🔊</button>
+                        </div>
+                        <div class="sol-item">
+                            <small>Pronuncia</small>
+                            <div id="result-pronunciation" class="sub-word"></div>
+                        </div>
+                        <div id="srs-controls" class="srs-buttons">
+                            <p class="srs-label">Come è andata?</p>
+                            <div class="srs-flex">
+                                <button id="btn-srs-wrong" class="btn-srs red">❌ Non la so!</button>
+                                <button id="btn-srs-correct" class="btn-srs green">✅ La so!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <main id="manage-page" class="page-content container" style="display:none;">
+            <div class="manage-layout"> 
+                <aside class="sidebar">
+                    <h3>Le Mie Cartelle 📂</h3>
+                    <div id="folder-list"></div>
+                    
+                    <div class="folder-controls">
+                        <button id="btn-toggle-new-folder">+ Nuova Cartella</button>
+                        <div id="new-folder-input-area" class="new-folder-input-area hidden">
+                            <input type="text" id="new-folder-name" placeholder="Nome cartella...">
+                            <div class="folder-input-actions">
+                                <button id="btn-add-folder" class="btn-small">Crea</button>
+                                <button id="btn-cancel-folder">Annulla</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="backup-zone">
+                        <button id="btn-export" class="btn-backup">📤 Export</button>
+                        <button id="btn-import-trigger" class="btn-backup">📥 Import</button>
+                        <input type="file" id="file-import" class="hidden" accept=".json">
+                    </div>
+                </aside>
+
+                <div class="manage-main">
+                    <section id="input-section" class="card">
+                        <div class="card-header-flex">
+                            <h2>Aggiungi Parola</h2>
+                            <div class="lang-selector-group">
+                                <select id="source-lang" class="lang-pill">
+                                    <option value="it">🇮🇹</option>
+                                    <option value="en" selected>🇬🇧</option>
+                                    <option value="fr">🇫🇷</option>
+                                    <option value="es">🇪🇸</option>
+                                </select>
+                                <span class="arrow-mini">➔</span>
+                                <select id="target-lang" class="lang-pill">
+                                    <option value="zh-TW" selected>🇹🇼</option>
+                                    <option value="ja">🇯🇵</option>
+                                    <option value="ko">🇰🇷</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <input type="text" id="eng-word" placeholder="Parola originale..." autocomplete="off">
+                        <input type="text" id="target-word" placeholder="Traduzione automatica...">
+                        <div class="input-group">
+                            <input type="text" id="pronunciation" placeholder="Pronuncia/Note">
+                            <button id="btn-search-pron" class="btn-addon">🔍</button>
+                        </div>
+                        <button id="btn-save">Salva nella cartella</button>
+                    </section>
+
+                    <section id="list-section" class="card">
+                        <h2>Parole nella cartella 📝</h2>
+                        <div class="table-container">
+                            <table id="words-table">
+                                <thead>
+                                    <tr>
+                                        <th>Originale</th>
+                                        <th>Traduzione</th>
+                                        <th>Pronuncia</th>
+                                        <th>Azione</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="words-list-body"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+       <main id="profile-page" class="page-content container" style="display:none;">
+    </main>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="file-manager.js"></script>
+    <script src="srs.js"></script>
+    <script src="translation.js"></script>
+    <script src="test-data.js"></script>
+    <script src="profile.js"></script>
+    <script src="quizmanager.js"></script>
+    <script src="i18n.js"></script>
+    <script src="app.js"></script>
+    <script src="cartuccia.js"></script>
+</body>
+</html>
